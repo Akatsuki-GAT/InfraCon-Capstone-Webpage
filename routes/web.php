@@ -1,6 +1,6 @@
 <?php
 
-//use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,6 +20,7 @@ Route::middleware('guest')->group(function () {
 /* Auth once users in and completes either login or register form*/
 Route::middleware('auth')->group(function () {
     Route::get('/home', fn () => view('home'))->name('home');
+    Route::patch('/account', [UserController::class, 'updateAccount'])->name('account.update');
     Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 });
 

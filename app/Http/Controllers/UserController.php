@@ -46,6 +46,33 @@ class UserController extends Controller
         return redirect('/login');
     }
 
+    // Update the email and password of the currently authenticated user.
+    public function updateAccount(Request $request)
+    {
+        /** @var User $user */
+        $user = $request->user();
+
+        $validated = $request->validateWithBag('updateAccount', [
+            'email' => [
+                'required',
+                'email',
+                'max:50',
+                Rule::unique('construction_users', 'email')->ignore($user->UserID, 'UserID'),
+            ],
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', 'string', 'min:8', 'max:255'],
+        ], [
+            'current_password.current_password' => 'The old password is incorrect.',
+        ]);
+
+        $user->update([
+            'email' => $validated['email'],
+            'password' => $validated['password'],
+        ]);
+
+        return redirect()->route('home')->with('account_updated', 'Your account was updated successfully.');
+    }
+
     //Register new acc and hashing their password
    /* public function register(Request $request) {
         $incomingFields = $request->validate([
