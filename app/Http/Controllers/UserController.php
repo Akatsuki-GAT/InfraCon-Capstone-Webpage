@@ -53,22 +53,33 @@ class UserController extends Controller
         $user = $request->user();
 
         $validated = $request->validateWithBag('updateAccount', [
+            'firstName' => ['nullable', 'string', 'max:50'],
+            'lastName' => ['nullable', 'string', 'max:50'],
+            'contactNo' => ['nullable', 'string', 'regex:/^[0-9]{11}$/'],
             'email' => [
-                'required',
+                'nullable',
                 'email',
                 'max:50',
                 Rule::unique('construction_users', 'email')->ignore($user->UserID, 'UserID'),
             ],
             'current_password' => ['required', 'current_password'],
-            'password' => ['required', 'string', 'min:8', 'max:255'],
+            'password' => ['nullable', 'string', 'min:8', 'max:255'],
         ], [
             'current_password.current_password' => 'The old password is incorrect.',
+            'contactNo.regex' => 'The contact number must contain exactly 11 digits.',
         ]);
 
-        $user->update([
-            'email' => $validated['email'],
-            'password' => $validated['password'],
-        ]);
+        $updates = [];
+
+        foreach (['firstName', 'lastName', 'contactNo', 'email', 'password'] as $field) {
+            if ($request->filled($field)) {
+                $updates[$field] = $validated[$field];
+            }
+        }
+
+        if ($updates !== []) {
+            $user->update($updates);
+        }
 
         return redirect()->route('home')->with('account_updated', 'Your account was updated successfully.');
     }
