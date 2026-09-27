@@ -53,8 +53,8 @@ class UserController extends Controller
         $user = $request->user();
 
         $validated = $request->validateWithBag('updateAccount', [
-            'firstName' => ['nullable', 'string', 'max:50'],
-            'lastName' => ['nullable', 'string', 'max:50'],
+            'firstName' => ['nullable', 'string', 'max:50','regex:/^[a-zA-Z\s]+$/u'],
+            'lastName' => ['nullable', 'string', 'max:50''regex:/^[a-zA-Z\s]+$/u'],
             'contactNo' => ['nullable', 'string', 'regex:/^[0-9]{11}$/'],
             'email' => [
                 'nullable',
