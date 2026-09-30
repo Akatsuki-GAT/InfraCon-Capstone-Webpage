@@ -20,6 +20,15 @@ class UserController extends Controller
     
 
     if (auth()-> attempt(['email' => $incomingFields['login'], 'password' => $incomingFields['signinpassword'] ])) {
+        if (auth()->user()->status !== 'active') {
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return back()->withInput($request->only('login'))
+                ->with('error', 'This account is inactive. Contact an administrator.');
+        }
+
         $request->session()->regenerate();
     /*if (Auth::attempt([
         $loginType => $incomingFields['login'],
@@ -54,7 +63,7 @@ class UserController extends Controller
 
         $validated = $request->validateWithBag('updateAccount', [
             'firstName' => ['nullable', 'string', 'max:50','regex:/^[a-zA-Z\s]+$/u'],
-            'lastName' => ['nullable', 'string', 'max:50''regex:/^[a-zA-Z\s]+$/u'],
+            'lastName' => ['nullable', 'string', 'max:50','regex:/^[a-zA-Z\s]+$/u'],
             'contactNo' => ['nullable', 'string', 'regex:/^[0-9]{11}$/'],
             'email' => [
                 'nullable',
