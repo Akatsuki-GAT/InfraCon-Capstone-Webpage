@@ -13,20 +13,20 @@ Route::get('/', function () {
 
     return redirect()->route('login');
 });
-Route::middleware('guest')->group(function () {
+Route::middleware('guest')->group(function () { //if users aren't login
     Route::get('/login', fn () => view('login'))->name('login');
     Route::post('/signin', [UserController::class, 'signin'])->name('signin');
 });
 
-/* Auth once users in and completes either login or register form*/
+/* Auth once users in and completes in login*/
 Route::middleware(['auth', 'active'])->group(function () {
     Route::get('/home', fn () => view('home'))->name('home');
     Route::patch('/account', [UserController::class, 'updateAccount'])->name('account.update');
     Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 });
 
-Route::middleware(['auth', 'active', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/users', [UserManagementController::class, 'index'])->name('users.index');
+Route::middleware(['auth', 'active', 'admin'])->prefix('admin')->name('admin.')->group(function () { //is login, currrent status is active, and role is admin
+    Route::get('/users', [UserManagementController::class, 'index'])->name('users.index'); 
     Route::post('/users', [UserManagementController::class, 'store'])->name('users.store');
     Route::patch('/users/{user}', [UserManagementController::class, 'update'])->name('users.update');
 });

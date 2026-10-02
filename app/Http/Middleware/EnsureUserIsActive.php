@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
-
+//Displays if account they login is inactive
 class EnsureUserIsActive
 {
     public function handle(Request $request, Closure $next): Response

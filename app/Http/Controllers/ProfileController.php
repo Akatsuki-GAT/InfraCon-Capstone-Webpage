@@ -11,12 +11,12 @@ use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
-    public function edit()
+    public function edit() //Edit user's own profile
     {
         return view('profile.edit', ['user' => Auth::user()]);
     }
 
-    public function update(Request $request)
+    public function update(Request $request) //updates user's own profile after editing
     {
         $user = Auth::user();
 

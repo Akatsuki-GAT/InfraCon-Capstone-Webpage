@@ -21,7 +21,7 @@ class UserManagementController extends Controller
             'users' => User::query()->orderBy('lastName')->orderBy('firstName')->get(),
         ]);
     }
-
+    // account creation
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validateWithBag('createUser', [
@@ -39,7 +39,7 @@ class UserManagementController extends Controller
         return redirect()->route('admin.users.index')
             ->with('user_management_success', 'The account was created and the user was notified by email.');
     }
-
+    //updating user's role and status
     public function update(Request $request, User $user): RedirectResponse
     {
         $validated = $request->validateWithBag('manageUser'.$user->UserID, [
