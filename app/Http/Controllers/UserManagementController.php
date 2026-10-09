@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 class UserManagementController extends Controller
 {
@@ -33,8 +34,20 @@ class UserManagementController extends Controller
             'password' => ['required', 'string', 'min:8', 'max:255', 'confirmed'],
         ], $this->messages());
 
-        $user = User::create($validated + ['status' => 'active']);
-        $user->notify(new AccountCreatedNotification());
+        try {
+            DB::transaction(function () use ($validated): void {
+                $user = User::create($validated + ['status' => 'active']);
+                $user->notify(new AccountCreatedNotification($user));
+            });
+        } catch (TransportExceptionInterface $exception) {
+            report($exception);
+
+            return redirect()->back()
+                ->withInput($request->except(['password', 'password_confirmation']))
+                ->withErrors([
+                    'email' => 'The account was not created because the notification email could not be sent. Check the SMTP credentials and try again.',
+                ], 'createUser');
+        }
 
         return redirect()->route('admin.users.index')
             ->with('user_management_success', 'The account was created and the user was notified by email.');
