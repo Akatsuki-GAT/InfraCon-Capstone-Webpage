@@ -189,6 +189,22 @@
                 button.setAttribute('aria-label', `${showing ? 'Hide' : 'Show'} password`);
             });
         });
+
+        //First Name
+        document.getElementById('firstName').addEventListener('input', function (e) {
+            // Regex replaces anything that is NOT a letter (a-z, A-Z) or a space
+            this.value = this.value.replace(/[^a-zA-Z\s]/g, '');
+        });
+        //Last Name
+        document.getElementById('lastName').addEventListener('input', function (e) {
+            // Regex replaces anything that is NOT a letter (a-z, A-Z) or a space
+            this.value = this.value.replace(/[^a-zA-Z\s]/g, '');
+        });
+        //Contact No.
+        document.getElementById('contactNo').addEventListener('input', function (e) {
+            // Regex replaces anything that is NOT a number (0-9)
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
     </script>
 </body>
 </html>

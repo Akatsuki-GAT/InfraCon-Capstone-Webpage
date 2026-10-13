@@ -202,6 +202,11 @@
             // Regex replaces anything that is NOT a letter (a-z, A-Z) or a space
             this.value = this.value.replace(/[^a-zA-Z\s]/g, '');
         });
+        //Contact No.
+        document.getElementById('contactNo').addEventListener('input', function (e) {
+            // Regex replaces anything that is NOT a letter (a-z, A-Z) or a space
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
         @if ($errors->updateAccount->any())
             accountDialog.showModal();
         @endif
