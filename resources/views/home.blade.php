@@ -6,25 +6,80 @@
     <title>Home - InfraCon</title>
     <style>
         * { box-sizing: border-box; }
-        body { margin: 0; min-height: 100vh; min-height: 100dvh; padding: 40px 20px; font-family: Arial, sans-serif; color: #1f2937; background: #f3f4f6; }
-        .page { width: min(760px, 100%); margin: 0 auto; }
-        .card { padding: 28px; border-radius: 12px; background: #fff; box-shadow: 0 10px 30px rgba(15, 23, 42, .08); }
-        h1 { margin: 0 0 10px; font-size: 28px; }
-        h2 { margin: 0 0 26px; font-size: 18px; font-weight: 500; color: #4b5563; }
-        .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+        body { 
+            margin: 0; 
+            min-height: 100vh; 
+            min-height: 100dvh; 
+            padding: 40px 20px; 
+            font-family: Arial, sans-serif; 
+            color: #1f2937; 
+            background: #f3f4f6; 
+        }
+        .page { 
+            width: min(760px, 100%); 
+            margin: 0 auto; 
+        }
+        .card { 
+            padding: 28px; 
+            border-radius: 12px; 
+            background: #fff; 
+            box-shadow: 0 10px 30px rgba(15, 23, 42, .08); 
+        }
+        h1 { margin: 0 0 10px; 
+            font-size: 28px; 
+        }
+        h2 { margin: 0 0 26px; 
+            font-size: 18px; 
+            font-weight: 500; 
+            color: #4b5563; 
+        }
+        .actions { display: flex; 
+            flex-wrap: wrap; 
+            gap: 12px; }
         button { font: inherit; }
-        .button { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; border: 0; border-radius: 8px; padding: 11px 18px; color: #fff; background: #2563eb; cursor: pointer; }
+        .button { display: inline-flex; 
+            align-items: center; justify-content: center;
+            min-height: 44px; border: 0; 
+            border-radius: 8px; padding: 11px 18px; 
+            color: #fff; background: #2563eb; 
+            cursor: pointer; 
+        }
         .button:hover { background: #1d4ed8; }
         .button-secondary { background: #4b5563; }
         .button-secondary:hover { background: #374151; }
         .button-plain { color: #374151; background: #e5e7eb; }
         .button-plain:hover { background: #d1d5db; }
-        .success { margin-bottom: 18px; padding: 12px 14px; border-radius: 8px; color: #166534; background: #dcfce7; }
-        dialog { width: min(500px, calc(100% - 32px)); max-height: calc(100dvh - 32px); padding: 0; overflow: hidden; border: 0; border-radius: 12px; box-shadow: 0 24px 60px rgba(0, 0, 0, .25); }
+        .success { margin-bottom: 18px;
+             padding: 12px 14px; 
+             border-radius: 8px; 
+             color: #166534; 
+             background: #dcfce7; 
+            }
+        dialog { width: min(500px, calc(100% - 32px)); 
+            max-height: calc(100dvh - 32px); 
+            padding: 0; 
+            overflow: hidden; 
+            border: 0; 
+            border-radius: 12px; 
+            box-shadow: 0 24px 60px rgba(0, 0, 0, .25); 
+        }
         dialog::backdrop { background: rgba(15, 23, 42, .55); }
-        .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid #e5e7eb; }
+        .modal-header { display: flex;
+             align-items: center; 
+             justify-content: space-between; 
+             padding: 20px 24px; 
+             border-bottom: 1px solid #e5e7eb; 
+            }
         .modal-header h3 { margin: 0; font-size: 21px; }
-        .close-button { width: 36px; height: 36px; border: 0; border-radius: 50%; font-size: 25px; line-height: 1; color: #4b5563; background: transparent; cursor: pointer; }
+        .close-button { width: 36px; 
+            height: 36px; border: 0; 
+            border-radius: 50%; 
+            font-size: 25px; 
+            line-height: 1; 
+            color: #4b5563; 
+            background: transparent; 
+            cursor: pointer; 
+        }
         .close-button:hover { background: #f3f4f6; }
         .modal-body { max-height: calc(100dvh - 98px); padding: 24px; overflow-y: auto; }
         .field { margin-bottom: 18px; }
@@ -34,7 +89,21 @@
         input[readonly] { color: #4b5563; background: #f3f4f6; }
         .password-field { position: relative; }
         .password-field input { padding-right: 48px; }
-        .password-toggle { position: absolute; top: 50%; right: 8px; display: grid; place-items: center; width: 36px; height: 36px; padding: 0; transform: translateY(-50%); border: 0; border-radius: 6px; color: #4b5563; background: transparent; cursor: pointer; }
+        .password-toggle { position: absolute; 
+            top: 50%;
+            right: 8px; 
+            display: grid; 
+            place-items: center; 
+            width: 36px; 
+            height: 36px; 
+            padding: 0; 
+            transform: translateY(-50%); 
+            border: 0; 
+            border-radius: 6px; 
+            color: #4b5563; 
+            background: transparent; 
+            cursor: pointer; 
+        }
         .password-toggle:hover { background: #f3f4f6; }
         .password-toggle svg { width: 21px; height: 21px; }
         .error { margin: 7px 0 0; color: #b91c1c; font-size: 14px; }

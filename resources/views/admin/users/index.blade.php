@@ -6,24 +6,65 @@
     <title>Manage User Accounts - InfraCon</title>
     <style>
         * { box-sizing: border-box; }
-        body { margin: 0; min-height: 100vh; min-height: 100dvh; padding: 32px 20px; font-family: Arial, sans-serif; color: #1f2937; background: #f3f4f6; }
+        body { margin: 0; 
+            min-height: 100vh; 
+            min-height: 100dvh; 
+            padding: 32px 20px; 
+            font-family: Arial, sans-serif; 
+            color: #1f2937; 
+            background: #f3f4f6; 
+        }
         .page { width: min(1180px, 100%); margin: 0 auto; }
         .topbar, .actions, .form-actions { display: flex; align-items: center; gap: 12px; }
         .topbar { justify-content: space-between; margin-bottom: 24px; }
         h1, h2 { margin-top: 0; }
         h1 { margin-bottom: 6px; }
         .subtitle { margin: 0; color: #64748b; }
-        .card { margin-bottom: 24px; padding: 24px; border-radius: 12px; background: #fff; box-shadow: 0 8px 24px rgba(15, 23, 42, .07); }
+        .card { margin-bottom: 24px; 
+            padding: 24px; 
+            border-radius: 12px;
+            background: #fff; 
+            box-shadow: 0 8px 24px rgba(15, 23, 42, .07); 
+        }
         .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
         .field label { display: block; margin-bottom: 7px; font-weight: 600; }
-        input, select { width: 100%; min-height: 44px; padding: 11px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font: inherit; background: #fff; }
+        input, select { width: 100%; 
+            min-height: 44px; 
+            padding: 11px 12px; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 8px; 
+            font: inherit; background: #fff; 
+        }
         input:focus, select:focus { outline: 3px solid rgba(37, 99, 235, .16); border-color: #2563eb; }
         .password-wrap { position: relative; }
         .password-wrap input { padding-right: 48px; }
-        .password-toggle { position: absolute; top: 50%; right: 7px; width: 36px; height: 36px; transform: translateY(-50%); border: 0; border-radius: 6px; color: #475569; background: transparent; cursor: pointer; }
+        .password-toggle { position: absolute; 
+            top: 50%; 
+            right: 7px; 
+            width: 36px; 
+            height: 36px; 
+            transform: translateY(-50%); 
+            border: 0; 
+            border-radius: 6px; 
+            color: #475569; 
+            background: transparent; 
+            cursor: pointer;
+         }
         .password-toggle:hover { background: #f1f5f9; }
         .password-toggle svg { width: 21px; height: 21px; }
-        .button { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 11px 17px; border: 0; border-radius: 8px; color: #fff; background: #2563eb; font: inherit; text-decoration: none; cursor: pointer; }
+        .button { display: inline-flex;
+            align-items: center; 
+            justify-content: center; 
+            min-height: 44px; 
+            padding: 11px 17px; 
+            border: 0; 
+            border-radius: 8px; 
+            color: #fff; 
+            background: #2563eb; 
+            font: inherit; 
+            text-decoration: none; 
+            cursor: pointer; 
+        }
         .button:hover { background: #1d4ed8; }
         .button-secondary { background: #475569; }
         .button-secondary:hover { background: #334155; }
