@@ -6,7 +6,7 @@
     <title>Manage User Accounts - InfraCon</title>
     <style>
         * { box-sizing: border-box; }
-        body { margin: 0; padding: 32px 20px; font-family: Arial, sans-serif; color: #1f2937; background: #f3f4f6; }
+        body { margin: 0; min-height: 100vh; min-height: 100dvh; padding: 32px 20px; font-family: Arial, sans-serif; color: #1f2937; background: #f3f4f6; }
         .page { width: min(1180px, 100%); margin: 0 auto; }
         .topbar, .actions, .form-actions { display: flex; align-items: center; gap: 12px; }
         .topbar { justify-content: space-between; margin-bottom: 24px; }
@@ -16,14 +16,14 @@
         .card { margin-bottom: 24px; padding: 24px; border-radius: 12px; background: #fff; box-shadow: 0 8px 24px rgba(15, 23, 42, .07); }
         .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
         .field label { display: block; margin-bottom: 7px; font-weight: 600; }
-        input, select { width: 100%; padding: 11px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font: inherit; background: #fff; }
+        input, select { width: 100%; min-height: 44px; padding: 11px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font: inherit; background: #fff; }
         input:focus, select:focus { outline: 3px solid rgba(37, 99, 235, .16); border-color: #2563eb; }
         .password-wrap { position: relative; }
         .password-wrap input { padding-right: 48px; }
         .password-toggle { position: absolute; top: 50%; right: 7px; width: 36px; height: 36px; transform: translateY(-50%); border: 0; border-radius: 6px; color: #475569; background: transparent; cursor: pointer; }
         .password-toggle:hover { background: #f1f5f9; }
         .password-toggle svg { width: 21px; height: 21px; }
-        .button { display: inline-block; padding: 11px 17px; border: 0; border-radius: 8px; color: #fff; background: #2563eb; font: inherit; text-decoration: none; cursor: pointer; }
+        .button { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 11px 17px; border: 0; border-radius: 8px; color: #fff; background: #2563eb; font: inherit; text-decoration: none; cursor: pointer; }
         .button:hover { background: #1d4ed8; }
         .button-secondary { background: #475569; }
         .button-secondary:hover { background: #334155; }
@@ -34,13 +34,43 @@
         th, td { padding: 13px 10px; border-bottom: 1px solid #e2e8f0; text-align: left; vertical-align: top; }
         th { color: #475569; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; }
         .manage-form { display: grid; grid-template-columns: minmax(150px, 1fr) minmax(120px, .7fr) auto; gap: 8px; align-items: start; min-width: 430px; }
+        .manage-form > * { min-width: 0; }
         .badge { display: inline-block; padding: 4px 9px; border-radius: 999px; font-size: 12px; font-weight: 700; text-transform: capitalize; }
         .badge-active { color: #166534; background: #dcfce7; }
         .badge-inactive { color: #991b1b; background: #fee2e2; }
         .hint { margin: 8px 0 0; color: #64748b; font-size: 13px; }
+        @media (max-width: 900px) {
+            body { padding: 24px 16px; }
+            .card { padding: 22px; }
+            .manage-form { grid-template-columns: minmax(140px, 1fr) minmax(115px, .7fr); min-width: 290px; }
+            .manage-form .button { grid-column: 1 / -1; }
+        }
+
         @media (max-width: 720px) {
             .grid { grid-template-columns: 1fr; }
             .topbar { align-items: flex-start; flex-direction: column; }
+            .grid-spacer { display: none; }
+            .table-wrap { overflow: visible; }
+            table, tbody, tr, td { display: block; width: 100%; }
+            thead { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+            tbody tr { margin-bottom: 16px; padding: 14px; border: 1px solid #e2e8f0; border-radius: 10px; }
+            tbody td { padding: 8px 0; border: 0; overflow-wrap: anywhere; }
+            tbody td::before { display: block; margin-bottom: 5px; color: #64748b; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; content: attr(data-label); }
+            tbody td.empty-state::before { display: none; }
+            .manage-form { grid-template-columns: 1fr 1fr auto; min-width: 0; }
+            .manage-form .button { grid-column: auto; }
+        }
+
+        @media (max-width: 480px) {
+            body { padding: 16px 12px; }
+            h1 { font-size: 26px; }
+            h2 { font-size: 21px; }
+            .card { padding: 18px; }
+            .topbar .actions { width: 100%; flex-direction: column; align-items: stretch; }
+            .topbar .actions > *, .topbar .actions form, .topbar .button { width: 100%; }
+            .form-actions, .form-actions .button { width: 100%; }
+            .manage-form { grid-template-columns: 1fr; }
+            .manage-form .button { width: 100%; }
         }
     </style>
 </head>
@@ -99,7 +129,7 @@
                         </select>
                         @error('RoleID', 'createUser')<p class="error">{{ $message }}</p>@enderror
                     </div>
-                    <div></div>
+                    <div class="grid-spacer"></div>
                     <div class="field">
                         <label for="password">Initial Password</label>
                         <div class="password-wrap">
@@ -139,16 +169,16 @@
                         @forelse ($users as $managedUser)
                             @php($errorBag = 'manageUser'.$managedUser->UserID)
                             <tr>
-                                <td>
+                                <td data-label="User">
                                     <strong>{{ $managedUser->firstName }} {{ $managedUser->lastName }}</strong><br>
                                     {{ $managedUser->email }}
                                 </td>
-                                <td>{{ $managedUser->contactNo }}</td>
-                                <td>
+                                <td data-label="Contact">{{ $managedUser->contactNo }}</td>
+                                <td data-label="Current status">
                                     {{ $managedUser->role->roleName }}<br>
                                     <span class="badge badge-{{ $managedUser->status }}">{{ $managedUser->status }}</span>
                                 </td>
-                                <td>
+                                <td data-label="Manage role and status">
                                     <form class="manage-form" action="{{ route('admin.users.update', $managedUser) }}" method="POST">
                                         @csrf
                                         @method('PATCH')
@@ -172,7 +202,7 @@
                                 </td>
                             </tr>
                         @empty
-                            <tr><td colspan="4">No user accounts found.</td></tr>
+                            <tr><td class="empty-state" colspan="4">No user accounts found.</td></tr>
                         @endforelse
                     </tbody>
                 </table>
