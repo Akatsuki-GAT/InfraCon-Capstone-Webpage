@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserManagementController;
+use App\Http\Controllers\ConstructionProjectController;
 use Illuminate\Support\Facades\Route;
 
 // Main landing page
@@ -23,12 +24,15 @@ Route::middleware(['auth', 'active'])->group(function () {
     Route::get('/home', fn () => view('home'))->name('home');
     Route::patch('/account', [UserController::class, 'updateAccount'])->name('account.update');
     Route::post('/logout', [UserController::class, 'logout'])->name('logout');
+    Route::get('/projects', [ConstructionProjectController::class, 'index'])->name('projects.index');
 });
 
 Route::middleware(['auth', 'active', 'admin'])->prefix('admin')->name('admin.')->group(function () { //is login, currrent status is active, and role is admin
     Route::get('/users', [UserManagementController::class, 'index'])->name('users.index'); 
     Route::post('/users', [UserManagementController::class, 'store'])->name('users.store');
     Route::patch('/users/{user}', [UserManagementController::class, 'update'])->name('users.update');
+    Route::post('/projects', [ConstructionProjectController::class, 'store'])->name('projects.store');
+    Route::patch('/projects/{project}', [ConstructionProjectController::class, 'update'])->name('projects.update');
 });
 
 

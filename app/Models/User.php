@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 // Construction Users Model 
 class User extends Authenticatable
 {
@@ -39,6 +40,18 @@ class User extends Authenticatable
         // 'roleID' is your foreign key on the users table
         // 'id' is the primary key on the roles table (change if yours is different)
         return $this->belongsTo(Role::class, 'RoleID'); 
+    }
+
+    public function accessibleProjects(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            construction_projects::class,
+            'project_access_users',
+            'UserID',
+            'ConProjID',
+            'UserID',
+            'ConProjID'
+        )->withTimestamps();
     }
 
     /**

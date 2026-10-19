@@ -151,6 +151,12 @@
                     <a href="{{ route('admin.users.index') }}" class="button" style="text-decoration: none;">Manage User Accounts</a>
                 @endif
 
+                @if (Auth::user()->isAdmin() || in_array(Auth::user()->role->roleName, ['Foreman', 'Client']))
+                    <a href="{{ route('projects.index') }}" class="button" style="text-decoration: none;">
+                        {{ Auth::user()->isAdmin() ? 'Manage Construction Projects' : 'View Construction Projects' }}
+                    </a>
+                @endif
+
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
                     <button type="submit" class="button button-secondary">Log Out</button>
