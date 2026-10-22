@@ -6,46 +6,104 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
+use Illuminate\View\View;
 
 class UserController extends Controller
 {
-    
-    //Existed user acc logs in
-    public function signin(Request $request) {
-    $incomingFields = $request->validate([
-        'login' => 'required|string',
-        'signinpassword' => 'required|string'
-    ]);
+    private const MAX_LOGIN_ATTEMPTS = 5;
 
-    
+    private const LOGIN_DECAY_SECONDS = 60;
 
-    if (auth()-> attempt(['email' => $incomingFields['login'], 'password' => $incomingFields['signinpassword'] ])) {
-        if (auth()->user()->status !== 'active') {
-            Auth::logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
+    public function login(Request $request): View
+    {
+        $lockoutUntil = (int) $request->session()->get('login_lockout_until', 0);
+        $lockoutSeconds = max(0, $lockoutUntil - now()->timestamp);
 
-            return back()->withInput($request->only('login'))
-                ->with('error', 'This account is inactive. Contact an administrator.');
+        if ($lockoutSeconds === 0) {
+            $request->session()->forget('login_lockout_until');
         }
 
-        $request->session()->regenerate();
-    /*if (Auth::attempt([
-        $loginType => $incomingFields['login'],
-        'password' => $incomingFields['signinpassword']
-    ])) {
-        $request->session()->regenerate();
-        //if role is admin 
-        if (auth()->user()->role === 'admin') {
-        
-    }*/
-
-        return redirect()->route('home');
-    }  
-
+        return view('login', compact('lockoutSeconds'));
+    }
     
-    return back()->with('error', 'Wrong username or password. Please try again.'); 
-}
+    //Existed user acc logs in
+    public function signin(Request $request)
+    {
+        $incomingFields = $request->validate([
+            'login' => ['required', 'email'],
+            'signinpassword' => ['required', 'string'],
+        ]);
+
+        $email = Str::lower(trim($incomingFields['login']));
+
+        if (! User::query()->where('email', $email)->exists()) {
+            return back()->withInput($request->only('login'))->with(
+                'error',
+                'No account is registered with this email address.'
+            );
+        }
+
+        $throttleKey = $this->loginThrottleKey($email, $request->ip());
+
+        if (RateLimiter::tooManyAttempts($throttleKey, self::MAX_LOGIN_ATTEMPTS)) {
+            return $this->loginLockoutResponse($request, $throttleKey);
+        }
+
+        if (Auth::attempt([
+            'email' => $email,
+            'password' => $incomingFields['signinpassword'],
+        ])) {
+            RateLimiter::clear($throttleKey);
+            $request->session()->forget('login_lockout_until');
+
+            if (Auth::user()->status !== 'active') {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return back()->withInput($request->only('login'))
+                    ->with('error', 'This account is inactive. Contact an administrator.');
+            }
+
+            $request->session()->regenerate();
+
+            return redirect()->route('home');
+        }
+
+        RateLimiter::hit($throttleKey, self::LOGIN_DECAY_SECONDS);
+        $attempts = RateLimiter::attempts($throttleKey);
+
+        if ($attempts >= self::MAX_LOGIN_ATTEMPTS) {
+            return $this->loginLockoutResponse($request, $throttleKey);
+        }
+
+        $remainingAttempts = self::MAX_LOGIN_ATTEMPTS - $attempts;
+
+        $attemptMessage = $remainingAttempts === 1
+            ? '1 last login attempt remaining.'
+            : $remainingAttempts.' login attempts remaining.';
+
+        return back()->withInput($request->only('login'))->with(
+            'error',
+            'Wrong email or password. '.$attemptMessage
+        );
+    }
+
+    private function loginThrottleKey(string $email, ?string $ip): string
+    {
+        return Str::transliterate(Str::lower(trim($email))).'|'.$ip;
+    }
+
+    private function loginLockoutResponse(Request $request, string $throttleKey)
+    {
+        $seconds = max(1, RateLimiter::availableIn($throttleKey));
+        $request->session()->put('login_lockout_until', now()->timestamp + $seconds);
+
+        return back()->withInput($request->only('login'))
+            ->with('error', 'Too many failed login attempts. Try again when the cooldown ends.');
+    }
 
     //User clicks logout
     public function logout(Request $request) {

@@ -15,7 +15,7 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 Route::middleware('guest')->group(function () { //if users aren't login
-    Route::get('/login', fn () => view('login'))->name('login');
+    Route::get('/login', [UserController::class, 'login'])->name('login');
     Route::post('/signin', [UserController::class, 'signin'])->name('signin');
 });
 
