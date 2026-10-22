@@ -28,7 +28,7 @@ class UserController extends Controller
         return view('login', compact('lockoutSeconds'));
     }
     
-    //Existed user acc logs in
+    //User acc logs in
     public function signin(Request $request)
     {
         $incomingFields = $request->validate([
@@ -38,14 +38,14 @@ class UserController extends Controller
 
         $email = Str::lower(trim($incomingFields['login']));
 
-        if (! User::query()->where('email', $email)->exists()) {
+        if (! User::query()->where('email', $email)->exists()) { //If the email inputted does not exist in the DB then show this
             return back()->withInput($request->only('login'))->with(
                 'error',
                 'No account is registered with this email address.'
             );
         }
 
-        $throttleKey = $this->loginThrottleKey($email, $request->ip());
+        $throttleKey = $this->loginThrottleKey($email, $request->ip()); //LOGIN ATTEMPTS = 5
 
         if (RateLimiter::tooManyAttempts($throttleKey, self::MAX_LOGIN_ATTEMPTS)) {
             return $this->loginLockoutResponse($request, $throttleKey);
@@ -81,7 +81,7 @@ class UserController extends Controller
 
         $remainingAttempts = self::MAX_LOGIN_ATTEMPTS - $attempts;
 
-        $attemptMessage = $remainingAttempts === 1
+        $attemptMessage = $remainingAttempts === 1 //Final before temporarilt block for set amount of duration
             ? '1 last login attempt remaining.'
             : $remainingAttempts.' login attempts remaining.';
 
