@@ -133,7 +133,7 @@
                     </div>
                 </div>
 
-                <div style="margin-top: 18px;">
+                <div style="margin-top: 18px;"> <!-- Select client and foreman through checkbox method to assign and select -->
                     <span class="group-label">Assign Foremen and Clients</span>
                     <div class="check-list">
                         @forelse ($assignableUsers as $assignableUser)
@@ -170,20 +170,20 @@
                 <article class="project-card">
                     <div class="project-heading">
                         <div>
-                            <h3>{{ $project->projectName }}</h3>
-                            <span class="muted">{{ $project->location }}</span>
+                            <h3>{{ $project->projectName }}</h3> <!-- Project name and location -->
+                            <span class="muted"; style="font-weight: bold;">{{ $project->location }}</span>
                         </div>
                         <span class="badge badge-{{ $project->status }}">{{ $project->status }}</span>
                     </div>
 
-                    <dl class="details">
+                    <dl class="details"; style="font-weight: bold;"> <!-- Details of the construction project -->
                         <div><dt>Started</dt><dd>{{ $project->startedDate->format('M j, Y') }}</dd></div>
                         <div><dt>Target end</dt><dd>{{ $project->targetEndDate->format('M j, Y') }}</dd></div>
                         <div><dt>Actual end</dt><dd>{{ $project->actualEndDate?->format('M j, Y') ?? 'Not completed' }}</dd></div>
                         <div><dt>Created by</dt><dd>{{ $project->creator?->firstName }} {{ $project->creator?->lastName }}</dd></div>
                     </dl>
 
-                    <p class="hint">
+                    <p class="hint"; style="font-weight: bold;">
                         Access: {{ $project->accessibleUsers->isEmpty() ? 'No Foreman or Client assigned' : $project->accessibleUsers->map(fn ($user) => $user->firstName.' '.$user->lastName.' ('.$user->role->roleName.')')->join(', ') }}
                     </p>
 
