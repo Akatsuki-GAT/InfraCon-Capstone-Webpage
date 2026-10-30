@@ -15,13 +15,15 @@ class SampleSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('construction_users')->insert([
+        DB::table('construction_users')->updateOrInsert([
+            'email' => 'gigi@gmail.com',
+        ], [
             'RoleID' => 2,
             'firstName' => 'Kiki',
             'lastName' => 'Gigi',
-            'email'     => 'Gigi@gmail.com',
             'password'  => Hash::make('SamplePassword123'),
             'contactNo'   => '09277358905',
+            'status' => 'active',
             'created_at' => now(),
             'updated_at' => now(),
         ]);

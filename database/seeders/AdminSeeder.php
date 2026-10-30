@@ -15,13 +15,15 @@ class AdminSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('construction_users')->insert([
+        DB::table('construction_users')->updateOrInsert([
+            'email' => 'admin@linfracon.com',
+        ], [
             'RoleID' => 1,
             'firstName' => 'Contractor',
             'lastName' => '/Project Manager',
-            'email'     => 'admin@linfracon.com',
             'password'  => Hash::make('StrongAdminPassword123'),
             'contactNo'   => '09397008867',
+            'status' => 'active',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
