@@ -24,7 +24,7 @@ class ConstructionProjectController extends Controller
         $query = construction_projects::query()
             ->with(['creator', 'accessibleUsers.role'])
             ->orderByRaw("CASE status WHEN 'active' THEN 1 WHEN 'complete' THEN 2 WHEN 'cancelled' THEN 3 ELSE 4 END")
-            ->orderByDesc('startedDate');
+            ->orderByDesc('actualStartDate');
 
         if (! $user->isAdmin()) {
             $query->whereHas('accessibleUsers', fn ($assigned) => $assigned->where('construction_users.UserID', $user->UserID));
@@ -71,17 +71,18 @@ class ConstructionProjectController extends Controller
         $validated = $request->validateWithBag($errorBag, [
             'projectName' => ['required', 'string', 'max:50', "regex:/^[\\pL\\pN\\s.,&()'\\/-]+$/u"],
             'location' => ['required', 'string', 'max:100'],
-            'startedDate' => ['required', 'date'],
-            'targetEndDate' => ['required', 'date', 'after_or_equal:startedDate'],
-            'actualEndDate' => ['nullable', 'date', 'after_or_equal:startedDate', 'required_if:status,complete'],
+            'targetStartDate' => ['required', 'date'],
+            'targetEndDate' => ['required', 'date', 'after_or_equal:targetStartDate'],
+            'actualStartDate' => ['required', 'date'],
+            'actualEndDate' => ['nullable', 'date', 'after_or_equal:actualStartDate', 'required_if:status,complete'],
             'status' => ['required', Rule::in(['active', 'complete', 'cancelled', 'archive'])],
             'accessUserIDs' => ['nullable', 'array'],
             'accessUserIDs.*' => ['integer', 'distinct', Rule::exists('construction_users', 'UserID')],
         ], [
             'projectName.regex' => 'The project name contains an unsupported character.',
-            'targetEndDate.after_or_equal' => 'The target end date must be on or after the start date.',
+            'targetEndDate.after_or_equal' => 'The target end date must be on or after the target start date.',
             'actualEndDate.required_if' => 'The actual end date is required when the project is complete.',
-            'actualEndDate.after_or_equal' => 'The actual end date must be on or after the start date.',
+            'actualEndDate.after_or_equal' => 'The actual end date must be on or after the actual start date.',
         ]);
 
         validator(

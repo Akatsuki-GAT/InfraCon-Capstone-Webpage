@@ -16,7 +16,8 @@ class construction_projects extends Model
         'createdBy',
         'projectName',
         'location',
-        'startedDate',
+        'targetStartDate',
+        'actualStartDate',
         'targetEndDate',
         'actualEndDate',
         'status',
@@ -25,7 +26,8 @@ class construction_projects extends Model
     protected function casts(): array
     {
         return [
-            'startedDate' => 'date',
+            'targetStartDate' => 'date',
+            'actualStartDate' => 'date',
             'targetEndDate' => 'date',
             'actualEndDate' => 'date',
         ];
@@ -51,5 +53,10 @@ class construction_projects extends Model
             'ConProjID',
             'UserID'
         )->withTimestamps();
+    }
+
+    public function progressRecords(): HasMany
+    {
+        return $this->hasMany(construction_progress::class, 'ConProjID', 'ConProjID');
     }
 }

@@ -107,14 +107,19 @@
                         @error('location', 'createProject')<p class="error">{{ $message }}</p>@enderror
                     </div>
                     <div class="field">
-                        <label for="startedDate">Start Date</label>
-                        <input id="startedDate" name="startedDate" type="date" value="{{ old('startedDate') }}" required>
-                        @error('startedDate', 'createProject')<p class="error">{{ $message }}</p>@enderror
+                        <label for="targetStartDate">Target Start Date</label>
+                        <input id="targetStartDate" name="targetStartDate" type="date" value="{{ old('targetStartDate') }}" required>
+                        @error('targetStartDate', 'createProject')<p class="error">{{ $message }}</p>@enderror
                     </div>
                     <div class="field">
                         <label for="targetEndDate">Target End Date</label>
                         <input id="targetEndDate" name="targetEndDate" type="date" value="{{ old('targetEndDate') }}" required>
                         @error('targetEndDate', 'createProject')<p class="error">{{ $message }}</p>@enderror
+                    </div>
+                    <div class="field">
+                        <label for="actualStartDate">Actual Start Date</label>
+                        <input id="actualStartDate" name="actualStartDate" type="date" value="{{ old('actualStartDate') }}" required>
+                        @error('actualStartDate', 'createProject')<p class="error">{{ $message }}</p>@enderror
                     </div>
                     <div class="field">
                         <label for="actualEndDate">Actual End Date</label>
@@ -177,8 +182,9 @@
                     </div>
 
                     <dl class="details"; style="font-weight: bold;"> <!-- Details of the construction project -->
-                        <div><dt>Started</dt><dd>{{ $project->startedDate->format('M j, Y') }}</dd></div>
+                        <div><dt>Target start</dt><dd>{{ $project->targetStartDate->format('M j, Y') }}</dd></div>
                         <div><dt>Target end</dt><dd>{{ $project->targetEndDate->format('M j, Y') }}</dd></div>
+                        <div><dt>Actual start</dt><dd>{{ $project->actualStartDate->format('M j, Y') }}</dd></div>
                         <div><dt>Actual end</dt><dd>{{ $project->actualEndDate?->format('M j, Y') ?? 'Not completed' }}</dd></div>
                         <div><dt>Created by</dt><dd>{{ $project->creator?->firstName }} {{ $project->creator?->lastName }}</dd></div>
                     </dl>
@@ -186,6 +192,12 @@
                     <p class="hint"; style="font-weight: bold;">
                         Access: {{ $project->accessibleUsers->isEmpty() ? 'No Foreman or Client assigned' : $project->accessibleUsers->map(fn ($user) => $user->firstName.' '.$user->lastName.' ('.$user->role->roleName.')')->join(', ') }}
                     </p>
+
+                    @if (Auth::user()->isAdmin() || Auth::user()->role->roleName === 'Foreman')
+                        <div class="form-actions" style="margin-top: 16px;">
+                            <a class="button" href="{{ route('projects.tasks.index', $project) }}">Manage & Monitor Project</a>
+                        </div>
+                    @endif
 
                     @if (Auth::user()->isAdmin())
                         <details @if($errors->$errorBag->any()) open @endif>
@@ -205,14 +217,19 @@
                                         @error('location', $errorBag)<p class="error">{{ $message }}</p>@enderror
                                     </div>
                                     <div class="field">
-                                        <label for="startedDate-{{ $project->ConProjID }}">Start Date</label>
-                                        <input id="startedDate-{{ $project->ConProjID }}" name="startedDate" type="date" value="{{ old('startedDate', $project->startedDate->format('Y-m-d')) }}" required>
-                                        @error('startedDate', $errorBag)<p class="error">{{ $message }}</p>@enderror
+                                        <label for="targetStartDate-{{ $project->ConProjID }}">Target Start Date</label>
+                                        <input id="targetStartDate-{{ $project->ConProjID }}" name="targetStartDate" type="date" value="{{ old('targetStartDate', $project->targetStartDate->format('Y-m-d')) }}" required>
+                                        @error('targetStartDate', $errorBag)<p class="error">{{ $message }}</p>@enderror
                                     </div>
                                     <div class="field">
                                         <label for="targetEndDate-{{ $project->ConProjID }}">Target End Date</label>
                                         <input id="targetEndDate-{{ $project->ConProjID }}" name="targetEndDate" type="date" value="{{ old('targetEndDate', $project->targetEndDate->format('Y-m-d')) }}" required>
                                         @error('targetEndDate', $errorBag)<p class="error">{{ $message }}</p>@enderror
+                                    </div>
+                                    <div class="field">
+                                        <label for="actualStartDate-{{ $project->ConProjID }}">Actual Start Date</label>
+                                        <input id="actualStartDate-{{ $project->ConProjID }}" name="actualStartDate" type="date" value="{{ old('actualStartDate', $project->actualStartDate->format('Y-m-d')) }}" required>
+                                        @error('actualStartDate', $errorBag)<p class="error">{{ $message }}</p>@enderror
                                     </div>
                                     <div class="field">
                                         <label for="actualEndDate-{{ $project->ConProjID }}">Actual End Date</label>

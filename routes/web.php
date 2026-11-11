@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\ConstructionProjectController;
+use App\Http\Controllers\TaskManagementController;
 use Illuminate\Support\Facades\Route;
 
 // Main landing page
@@ -25,6 +26,9 @@ Route::middleware(['auth', 'active'])->group(function () {
     Route::patch('/account', [UserController::class, 'updateAccount'])->name('account.update');
     Route::post('/logout', [UserController::class, 'logout'])->name('logout');
     Route::get('/projects', [ConstructionProjectController::class, 'index'])->name('projects.index');
+    Route::get('/projects/{project}/tasks', [TaskManagementController::class, 'index'])->name('projects.tasks.index');
+    Route::post('/projects/{project}/progress/{progress}/tasks', [TaskManagementController::class, 'storeTask'])->name('projects.progress.tasks.store');
+    Route::patch('/tasks/{task}', [TaskManagementController::class, 'updateTask'])->name('tasks.update');
 });
 
 Route::middleware(['auth', 'active', 'admin'])->prefix('admin')->name('admin.')->group(function () { //is login, currrent status is active, and role is admin
@@ -33,6 +37,8 @@ Route::middleware(['auth', 'active', 'admin'])->prefix('admin')->name('admin.')-
     Route::patch('/users/{user}', [UserManagementController::class, 'update'])->name('users.update');
     Route::post('/projects', [ConstructionProjectController::class, 'store'])->name('projects.store');
     Route::patch('/projects/{project}', [ConstructionProjectController::class, 'update'])->name('projects.update');
+    Route::post('/projects/{project}/progress', [TaskManagementController::class, 'storeProgress'])->name('projects.progress.store');
+    Route::patch('/progress/{progress}', [TaskManagementController::class, 'updateProgress'])->name('progress.update');
 });
 
 
