@@ -18,7 +18,7 @@ class SampleSeeder extends Seeder
         DB::table('construction_users')->updateOrInsert([
             'email' => 'gigi@gmail.com',
         ], [
-            'RoleID' => 2,
+            'RoleID' => 3,
             'firstName' => 'Kiki',
             'lastName' => 'Gigi',
             'password'  => Hash::make('SamplePassword123'),
